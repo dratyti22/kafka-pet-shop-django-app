@@ -1,0 +1,16 @@
+[project]
+name = "django-app"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.11"
+dependencies = [
+    "django>=5.2.4",
+    "django-cors-headers>=4.7.0",
+    "django-debug-toolbar>=5.2.0",
+    "django-environ>=0.12.0",
+    "djangorestframework>=3.16.0",
+    "pillow>=11.3.0",
+    "psycopg2-binary>=2.9.10",
+    "pytest>=8.4.1",
+    "pytest-django>=4.11.1",
+]
