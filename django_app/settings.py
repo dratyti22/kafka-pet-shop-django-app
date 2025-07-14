@@ -35,12 +35,17 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(",")
 # Application definition
 
 INSTALLED_APPS = [
+    "unfold",
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "django.contrib.postgres",
+
+    "django.contrib.sites",
 
     "rest_framework",
     "debug_toolbar",
@@ -84,6 +89,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_app.wsgi.application'
 
+# Django Site
+SITE_ID = 1
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -151,3 +158,22 @@ INTERNAL_IPS = [
 
 # Custom User Model
 AUTH_USER_MODEL = "user.User"
+
+# Celery
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_IMPORTS = ['src.services']
+
+# Email
+EMAIL_BACKEND = env("EMAIL_BACKEND")
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_USE_TLS = env("EMAIL_USE_TLS")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
