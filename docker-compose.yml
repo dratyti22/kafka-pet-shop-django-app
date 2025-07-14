@@ -1,0 +1,28 @@
+name: kafka-django
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: kafka-django-postgres
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgres/data
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    env_file:
+      - .env
+    ports:
+    - "5672:5672"
+    - "15672:15672"
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  postgres_data:
+  rabbitmq_data:

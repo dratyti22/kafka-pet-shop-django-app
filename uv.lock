@@ -174,7 +174,7 @@ tests = [
 
 [package.metadata]
 requires-dist = [
-    { name = "celery", specifier = ">=5.5.3" },
+    { name = "celery", extras = ["amqp"], specifier = ">=5.5.3" },
     { name = "django", specifier = ">=5.2.4" },
     { name = "django-cors-headers", specifier = ">=4.7.0" },
     { name = "django-debug-toolbar", specifier = ">=5.2.0" },
