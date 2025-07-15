@@ -1,7 +1,24 @@
 ### Register User
-POST {{path}}api/user/register HTTP/1.1
-Content-Type: application/json
+POST {{path}}api/user/register/ HTTP/1.1
+Content-Type: {{content_type}}
 
 {
- "email": "belousovi783@gmail.com"
+  "email": "belousovi783@gmail.com",
+  "password": "rootroot"
 }
+
+
+### Login User
+POST {{path}}api/user/login HTTP/1.1
+Content-Type: {{content_type}}
+
+{
+  "email": "belousovi783@gmail.com",
+  "password": "rootroot"
+}
+
+### Logout User
+GET {{path}}api/user/logout
+Content-Type: {{content_type}}
+Set-Cookie: csrftoken=EMuxAuhOrY2vRuoHWsgL8mrMeGR9UZEB; expires=Tue, 14 Jul 2026 12:35:12 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+Set-Cookie: sessionid=2re5gnf6jakjd15modl7f4dfwmzukb60; expires=Tue, 29 Jul 2025 12:35:12 GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
