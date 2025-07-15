@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "corsheaders",
 
     'src.user.apps.UserConfig',
+    "src.product.apps.ProductConfig",
 ]
 
 MIDDLEWARE = [
