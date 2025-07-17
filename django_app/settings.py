@@ -43,13 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "django.contrib.postgres",
 
+    "django.contrib.postgres",
     "django.contrib.sites",
 
     "rest_framework",
     "debug_toolbar",
     "corsheaders",
+    "mptt",
 
     'src.user.apps.UserConfig',
     "src.product.apps.ProductConfig",
