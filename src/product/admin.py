@@ -6,7 +6,8 @@ from src.product.models import CategoryModel, PhotoProductModel, ProductModel
 
 @admin.register(CategoryModel)
 class CategoryAdmin(ModelAdmin):
-    pass
+    list_display = ["name", "slug"]
+    prepopulated_fields = {"slug": ("name",)}
 
 
 class PhotoProductInline(admin.TabularInline):

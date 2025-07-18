@@ -26,7 +26,7 @@ class CategoryModel(MPTTModel):
         verbose_name = "category"
         verbose_name_plural = "categories"
         app_label = "product"
-        
+
     class MPTTMeta:
         order_insertion_by = ['name']
 
