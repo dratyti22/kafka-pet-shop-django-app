@@ -48,6 +48,7 @@ class ProductModel(models.Model):
     category = models.ForeignKey(to=CategoryModel, on_delete=models.CASCADE, related_name="products")
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="products")
     quantity = models.PositiveIntegerField()
+    sales_count = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount = models.DecimalField(max_digits=5, decimal_places=2, default=0,
                                    validators=[MaxValueValidator(100), MinValueValidator(0)])

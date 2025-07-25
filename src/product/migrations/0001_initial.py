@@ -44,6 +44,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField()),
                 ('description_short', models.CharField(blank=True, max_length=200)),
                 ('quantity', models.PositiveIntegerField()),
+                ('sales_count', models.PositiveIntegerField()),
                 ('price', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('discount', models.DecimalField(decimal_places=2, default=0, max_digits=5, validators=[django.core.validators.MaxValueValidator(100), django.core.validators.MinValueValidator(0)])),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
