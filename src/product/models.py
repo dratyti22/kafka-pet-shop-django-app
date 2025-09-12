@@ -1,5 +1,6 @@
 import uuid
-
+from datetime import datetime
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -48,24 +49,23 @@ class ProductModel(models.Model):
     category = models.ForeignKey(to=CategoryModel, on_delete=models.CASCADE, related_name="products")
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="products")
     quantity = models.PositiveIntegerField()
-    sales_count = models.PositiveIntegerField()
+    sales_count = models.PositiveIntegerField(blank=True, default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount = models.DecimalField(max_digits=5, decimal_places=2, default=0,
                                    validators=[MaxValueValidator(100), MinValueValidator(0)])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=False)
-    is_popular = models.BooleanField(default=False)
-    is_new = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "product"
         verbose_name_plural = "products"
         app_label = "product"
         indexes = [
+            models.Index(fields=["slug"]),
+            models.Index(fields=["price"]),
             models.Index(fields=["category", "is_active"]),
             models.Index(fields=["created_at"]),
-            models.Index(fields=["slug"]),
         ]
         constraints = [
             models.UniqueConstraint(
@@ -89,6 +89,20 @@ class ProductModel(models.Model):
             self.slug = slug
         super().save(*args, **kwargs)
 
+    @property
+    def is_popular(self):
+        return self.sales_count > 500
+
+    @property
+    def is_new(self):
+        from datetime import timedelta
+        return self.created_at > (timezone.now() - timedelta(days=10))
+
+    @property
+    def final_price(self):
+        if self.discount > 0:
+            return round(self.price * (1 - self.discount / 100), 2)
+        return self.price
 
 class PhotoProductModel(models.Model):
     product = models.ForeignKey(to=ProductModel, on_delete=models.CASCADE, related_name="photos",
@@ -115,8 +129,8 @@ class PhotoProductModel(models.Model):
         super().save(*args, **kwargs)
 
 
-class ProductAttribute(models.Model):
-    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
+class AttributeProductModel(models.Model):
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name="attributes")
     key = models.CharField(max_length=120)
     value = models.TextField()
 
@@ -124,6 +138,9 @@ class ProductAttribute(models.Model):
         verbose_name = "attribute"
         verbose_name_plural = "attributes"
         app_label = "product"
+        indexes = [
+            models.Index(fields=["product"]),
+        ]
 
     def __str__(self):
         return f"{self.key:30} - {self.value:30}"

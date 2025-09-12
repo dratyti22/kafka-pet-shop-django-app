@@ -1,6 +1,6 @@
 ### Register User
-POST {{path}}api/user/register/ HTTP/1.1
-Content-Type: {{content_type}}
+POST {{path}}api/user/register HTTP/1.1
+Content-Type: application/json
 
 {
   "email": "belousovi783@gmail.com",
@@ -10,15 +10,27 @@ Content-Type: {{content_type}}
 
 ### Login User
 POST {{path}}api/user/login HTTP/1.1
-Content-Type: {{content_type}}
+Content-Type: application/json
 
 {
   "email": "belousovi783@gmail.com",
   "password": "rootroot"
 }
 
-### Logout User
-GET {{path}}api/user/logout
-Content-Type: {{content_type}}
-Set-Cookie: csrftoken=EMuxAuhOrY2vRuoHWsgL8mrMeGR9UZEB; expires=Tue, 14 Jul 2026 12:35:12 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-Set-Cookie: sessionid=2re5gnf6jakjd15modl7f4dfwmzukb60; expires=Tue, 29 Jul 2025 12:35:12 GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+> {%
+    client.global.set("csrftoken", response.headers.valuesOf("Set-Cookie").find(cookie => cookie.includes("csrftoken")).split("=")[1].split(";")[0]);
+    client.global.set("sessionid", response.headers.valuesOf("Set-Cookie").find(cookie => cookie.includes("sessionid")).split("=")[1].split(";")[0]);
+%}
+
+### Logout User (with variables)
+GET {{path}}api/user/logout/
+Cookie: csrftoken={{csrftoken}}; sessionid={{sessionid}}
+X-CSRFToken: {{csrftoken}}
+
+> {%
+    client.global.clear("csrftoken");
+    client.global.clear("sessionid")
+%}
+
+### Logout User (simple)
+GET {{path}}api/user/logout/

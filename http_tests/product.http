@@ -1,0 +1,23 @@
+
+### Get All Product
+GET {{path}}api/product/
+Content-Type: application/json
+Set-Cookie: sessionid={{sessionid}}; csrftoken={{csrftoken}}
+X-Csrf-Token: {{csrftoken}}
+
+### Create product
+POST {{path}}api/product/
+Content-Type: application/json
+Cookie: sessionid={{sessionid}}; csrftoken={{csrftoken}}
+X-CSRFToken: {{csrftoken}}
+
+{
+  "name": "Свет с UVD 10% и UBA 5% http",
+  "description": "свет для рептилий с функцией обогрева и ультрофиолета",
+  "description_short": "свет",
+  "category": "2",
+  "quantity": 100,
+  "price": 1000,
+  "discount": 5
+}
+

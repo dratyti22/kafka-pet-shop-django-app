@@ -1,7 +1,7 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
 
-from src.product.models import CategoryModel, PhotoProductModel, ProductModel
+from src.product.models import CategoryModel, PhotoProductModel, ProductModel, AttributeProductModel
 
 
 @admin.register(CategoryModel)
@@ -15,6 +15,21 @@ class PhotoProductInline(admin.TabularInline):
     model = PhotoProductModel
 
 
+class AttributeProductInline(admin.TabularInline):
+    fk_name = "product"
+    model = AttributeProductModel
+
+
+@admin.register(AttributeProductModel)
+class AttributeProductAdmin(ModelAdmin):
+    list_display = ["product","short_key"]
+
+    def short_key(self, obj):
+        return obj.key[:30]
+
+
 @admin.register(ProductModel)
 class ProductAdmin(ModelAdmin):
-    inlines = [PhotoProductInline, ]
+    list_display = ["name", "price", "is_active"]
+    inlines = [PhotoProductInline, AttributeProductInline]
+    prepopulated_fields = {"slug": ("name",)}

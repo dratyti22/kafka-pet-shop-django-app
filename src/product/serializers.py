@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from src.product.models import CategoryModel, ProductModel
+from src.product.models import CategoryModel, ProductModel, PhotoProductModel, AttributeProductModel
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -9,17 +9,54 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ("name", "slug", "parent")
 
 
-class ProductGetSerializer(serializers.ModelSerializer):
+class PhotoProductSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProductModel
-        fields = ("name", "slug", "description_short", "price", "discount", "is_popular", "is_new","is_active")
-        read_only_fields = ("is_active","slug")
+        model = PhotoProductModel
+        fields = ("product", "image", "is_main", "order")
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class AttributeProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AttributeProductModel
+        fields = ("product", "key", "value")
+
+
+class ProductCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModel
-        fields = ("id", "name", "slug", "description",
-                  "description_short", "category", "user", "quantity", "sales_count", "price",
-                  "discount", "created_at", "updated_at", "is_active", "is_popular", "is_new")
-        read_only_fields = ("id", "created_at", "updated_at", "user", "slug","sales_count")
+        fields = ("name", "description", "description_short", "category", "quantity", "price", "discount",
+                  "slug")
+        read_only_fields = ("slug",)
+
+
+class ProductListSerializer(serializers.ModelSerializer):
+    is_popular = serializers.SerializerMethodField(read_only=True)
+    is_new = serializers.SerializerMethodField(read_only=True)
+    main_photo = serializers.CharField(read_only=True)
+    final_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+
+    def get_is_popular(self, obj):
+        return obj.is_popular
+
+    def get_is_new(self, obj):
+        return obj.is_new
+
+    def get_final_price(self, obj):
+        return obj.final_price
+
+    class Meta:
+        model = ProductModel
+        fields = ("id", "name", "slug", "description_short", "price", "discount", "is_active",
+                  "is_popular", "is_new", "main_photo", "final_price")
+
+
+class ProductDetailSerializer(ProductListSerializer):
+    photos = PhotoProductSerializer(many=True, read_only=True)
+    attributes = AttributeProductSerializer(many=True, read_only=True)
+    category = CategorySerializer(read_only=True)
+
+    class Meta(ProductListSerializer.Meta):
+        model = ProductModel
+        fields = ("id", "name", "slug", "description", "description_short", "category",
+                  "quantity", "price", "discount", "final_price", "created_at", "is_active", "is_popular",
+                  "is_new", "photos", "attributes")
