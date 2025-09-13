@@ -12,15 +12,20 @@ from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from src.product.models import CategoryModel, PhotoProductModel, ProductModel
-from src.product.permissions import IsOwnerOrStaffOrReadOnlyPermission, SalesManPermission
+from src.product.models import AttributeProductModel, CategoryModel, PhotoProductModel, ProductModel
+from src.product.permissions import (
+    IsOwnerOrStaffOrReadOnlyPermission,
+    IsOwnerProductOrStaffPermission,
+    SalesManPermission,
+)
 from src.product.serializers import (
+    AttributeProductSerializer,
     CategorySerializer,
+    PhotoProductSerializer,
     ProductCreateUpdateSerializer,
     ProductDetailSerializer,
     ProductListSerializer,
 )
-
 
 # class CategoryView(ListAPIView):
 #     queryset = CategoryModel.objects.all()
@@ -87,7 +92,7 @@ class ProductView(viewsets.GenericViewSet, ListModelMixin, RetrieveModelMixin, C
             self.permission_classes = (SalesManPermission,)
         else:
             self.permission_classes = (IsOwnerOrStaffOrReadOnlyPermission,)
-        return super(ProductView, self).get_permissions()
+        return super().get_permissions()
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -114,7 +119,33 @@ class ProductView(viewsets.GenericViewSet, ListModelMixin, RetrieveModelMixin, C
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def partial_update(self, request, *args, **kwargs):
+        kwargs["partial"] = True
+        return self.update(request, *args, **kwargs)
+
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PhotoProductView(viewsets.GenericViewSet, ListModelMixin, RetrieveModelMixin, CreateModelMixin,
+                       UpdateModelMixin, DestroyModelMixin):
+    serializer_class = PhotoProductSerializer
+    permission_classes = (IsOwnerProductOrStaffPermission,)
+
+    def get_queryset(self):
+        queryset = PhotoProductModel.objects.filter(product__user=self.request.user)
+        if product_slug := self.kwargs.get('product_slug'):
+            queryset = queryset.filter(product__slug=product_slug)
+        return queryset
+
+
+class AttributeProductView(viewsets.ModelViewSet):
+    serializer_class = AttributeProductSerializer
+    permission_classes = (IsOwnerProductOrStaffPermission,)
+    def get_queryset(self):
+        queryset = AttributeProductModel.objects.filter(product__user=self.request.user)
+        if product_slug := self.kwargs.get('product_slug'):
+            queryset = queryset.filter(product__slug=product_slug)
+        return queryset

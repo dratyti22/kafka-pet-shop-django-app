@@ -1,10 +1,10 @@
 import uuid
-from datetime import datetime
-from django.utils import timezone
+
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Max
+from django.utils import timezone
 from django.utils.text import slugify
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from src.product.models import CategoryModel, ProductModel, PhotoProductModel, AttributeProductModel
+from src.product.models import AttributeProductModel, CategoryModel, PhotoProductModel, ProductModel
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -12,13 +12,13 @@ class CategorySerializer(serializers.ModelSerializer):
 class PhotoProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhotoProductModel
-        fields = ("product", "image", "is_main", "order")
+        fields = ("product", "image", "is_main", "order", "id")
 
 
 class AttributeProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = AttributeProductModel
-        fields = ("product", "key", "value")
+        fields = ("product", "key", "value", "id")
 
 
 class ProductCreateUpdateSerializer(serializers.ModelSerializer):

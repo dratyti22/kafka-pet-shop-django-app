@@ -1,7 +1,7 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
 
-from src.product.models import CategoryModel, PhotoProductModel, ProductModel, AttributeProductModel
+from src.product.models import AttributeProductModel, CategoryModel, PhotoProductModel, ProductModel
 
 
 @admin.register(CategoryModel)
