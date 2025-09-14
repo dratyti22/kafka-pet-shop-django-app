@@ -13,12 +13,14 @@ class PhotoProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhotoProductModel
         fields = ("product", "image", "is_main", "order", "id")
+        read_only_fields = ("id",)
 
 
 class AttributeProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = AttributeProductModel
         fields = ("product", "key", "value", "id")
+        read_only_fields = ("id",)
 
 
 class ProductCreateUpdateSerializer(serializers.ModelSerializer):

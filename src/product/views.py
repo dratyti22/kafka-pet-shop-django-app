@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from src.product.models import AttributeProductModel, CategoryModel, PhotoProductModel, ProductModel
+from src.product.pagination import ProductPagination
 from src.product.permissions import (
     IsOwnerOrStaffOrReadOnlyPermission,
     IsOwnerProductOrStaffPermission,
@@ -59,6 +60,7 @@ class ProductView(viewsets.GenericViewSet, ListModelMixin, RetrieveModelMixin, C
     lookup_field = "slug"
     lookup_url_kwarg = "slug"
     parser_classes = [JSONParser, FormParser, MultiPartParser]
+    pagination_class = ProductPagination
 
     def get_queryset(self):
         main_photo = PhotoProductModel.objects.filter(product=OuterRef("pk"), is_main=True).values("image")[
@@ -96,8 +98,12 @@ class ProductView(viewsets.GenericViewSet, ListModelMixin, RetrieveModelMixin, C
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, *args, **kwargs):
@@ -144,6 +150,7 @@ class PhotoProductView(viewsets.GenericViewSet, ListModelMixin, RetrieveModelMix
 class AttributeProductView(viewsets.ModelViewSet):
     serializer_class = AttributeProductSerializer
     permission_classes = (IsOwnerProductOrStaffPermission,)
+
     def get_queryset(self):
         queryset = AttributeProductModel.objects.filter(product__user=self.request.user)
         if product_slug := self.kwargs.get('product_slug'):
