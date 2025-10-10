@@ -185,3 +185,15 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 16
 }
+
+
+# Kafka
+KAFKA_URL = env("KAFKA_URL")
+
+
+# Kafka
+KAFKA_URL = env("KAFKA_URL")
+
+
+# Kafka
+KAFKA_URL = env("KAFKA_URL")
