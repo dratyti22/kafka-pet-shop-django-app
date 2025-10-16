@@ -15,6 +15,15 @@ class PhotoProductSerializer(serializers.ModelSerializer):
         fields = ("product", "image", "is_main", "order", "id")
         read_only_fields = ("id",)
 
+    def create(self, validated_data):
+        return PhotoProductModel.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+
 
 class AttributeProductSerializer(serializers.ModelSerializer):
     class Meta:

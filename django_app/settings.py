@@ -183,7 +183,11 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 # Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 16
+    'PAGE_SIZE': 16,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'src.services.jwt_auth.JWTAuthentication',
+        "rest_framework.authentication.SessionAuthentication"
+    ],
 }
 
 
