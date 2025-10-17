@@ -4,10 +4,12 @@ import jwt
 from django.contrib.auth import get_user_model
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.request import Request
-from rest_framework_simplejwt.exceptions import TokenError, ExpiredTokenError, InvalidToken
+from rest_framework_simplejwt.exceptions import ExpiredTokenError, InvalidToken, TokenError
 
-from django_app import settings
+from django.conf import settings
+
 User = get_user_model()
+
 
 class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
@@ -18,7 +20,6 @@ class JWTAuthentication(BaseAuthentication):
             return None
 
 
-
 def verify_token_from_headers(request: Request):
     auth_header = request.META.get("HTTP_AUTHORIZATION")
     if not auth_header:
@@ -27,12 +28,13 @@ def verify_token_from_headers(request: Request):
     parts = auth_header.split()
     if len(parts) != 2:
         raise TokenError("Invalid token format")
-    
+
     token_type, token = parts
     if token_type != "Bearer":
         raise TokenError("Token must start with Bearer")
-    
+
     return verify_access_token(token)
+
 
 def verify_access_token(token: str):
     payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
@@ -49,12 +51,4 @@ def verify_access_token(token: str):
         user = User.objects.get(pk=user_id)
         return user
     except User.DoesNotExist:
-        raise TokenError("User not found")
-
-
-
-
-
-
-
-
+        return None

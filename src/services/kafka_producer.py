@@ -1,9 +1,8 @@
-import json
 import logging
 
 from confluent_kafka import Producer
 
-from django_app.settings import KAFKA_URL
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
@@ -12,7 +11,7 @@ logger.level = logging.INFO
 def get_kafka_producer() -> Producer:
     try:
         config = {
-            'bootstrap.servers': KAFKA_URL,
+            'bootstrap.servers': settings.KAFKA_URL,
             'retries': 3,
             'linger.ms': 10,
             'request.timeout.ms': 30000,

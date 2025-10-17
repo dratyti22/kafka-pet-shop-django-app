@@ -2,18 +2,17 @@ import datetime
 import json
 import logging
 import uuid
-import jwt
 
+import jwt
 from django.contrib.auth import get_user_model
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import authentication_classes
 
 from src.services.jwt_auth import JWTAuthentication
-from src.services.jwt_utils import jwt_verification_token, generate_auth_tokens
+from src.services.jwt_utils import generate_auth_tokens, jwt_verification_token
 from src.services.kafka_producer import get_kafka_producer
 from src.services.tasks import send_email_task
 from src.user.serializers import UserRegisterLoginSerializer
@@ -38,7 +37,7 @@ class UserRegisterView(APIView):
             except Exception as e:
                 logger.warning(f"Failed to queue email task (non-critical): {e}")
             return Response({"data": "На ваш email отправлено письмо для подтверждения аккаунта"},
-                            status=status.HTTP_200_OK)
+                            status=status.HTTP_201_CREATED)
 
         return Response({"data": "Неверное поле"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -79,7 +78,7 @@ class UserActivateView(APIView):
                     value=json.dumps(data).encode('utf-8'),
                 )
                 producer.flush(timeout=10)
-                logger.info(f"Message sent to the topic: user_topic")
+                logger.info("Message sent to the topic: user_topic")
             except Exception as e:
                 logger.warning(f"Failed to send Kafka event (non-critical): {e}")
 
@@ -102,9 +101,9 @@ class UserLoginView(APIView):
                     return Response({"data": "Успешная авторизация", "tokens": tokens},
                                     status=status.HTTP_200_OK)
                 return Response({"data": "Неверные данные или аккаунт не активирован"},
-                                status=status.HTTP_400_BAD_REQUEST)
+                                status=status.HTTP_401_UNAUTHORIZED)
             except User.DoesNotExist:
-                return Response({"data": "Неверные данные"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"data": "Неверные данные"}, status=status.HTTP_401_UNAUTHORIZED)
         return Response({"data": "Неверные данные"}, status=status.HTTP_400_BAD_REQUEST)
 
 

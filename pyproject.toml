@@ -19,11 +19,12 @@ dependencies = [
     "pillow>=11.3.0",
     "psycopg2-binary>=2.9.10",
     "pyjwt>=2.10.1",
+    "djangorestframework-simplejwt>=5.5.1",
 ]
 
 [dependency-groups]
-def = [
-    "ruff>=0.12.2",
+dev = [
+    "ruff>=0.14.1",
 ]
 tests = [
     "pytest>=8.4.1",
@@ -74,3 +75,15 @@ ignore = [
 known-third-party = ["django", "rest_framework", "celery"]
 known-first-party = ["django_app"]
 section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "django_app.test_settings"
+python_files = ["conftest.py tests.py test_*.py *_test.py"]
+pythonpath ="src"
+testpaths ="tests"
+addopts = "--tb=short -v"
+
+[tool.pytest.ini_options.markers]
+api = "api: testing api endpoints"
+user="user: tetings user endpoints"
+product="product: tetings product endpoints"

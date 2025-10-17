@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import jwt
 
-from django_app import settings
+from django.conf import settings
 
 
 def jwt_generate_token(user_id):

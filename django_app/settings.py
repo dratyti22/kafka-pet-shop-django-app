@@ -194,10 +194,3 @@ REST_FRAMEWORK = {
 # Kafka
 KAFKA_URL = env("KAFKA_URL")
 
-
-# Kafka
-KAFKA_URL = env("KAFKA_URL")
-
-
-# Kafka
-KAFKA_URL = env("KAFKA_URL")
