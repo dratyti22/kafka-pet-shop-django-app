@@ -5,19 +5,18 @@ import uuid
 
 import jwt
 from django.contrib.auth import get_user_model
-from rest_framework import status
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import api_view, authentication_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import viewsets
-from rest_framework import mixins
 
 from src.services.jwt_auth import JWTAuthentication
 from src.services.jwt_utils import generate_auth_tokens, jwt_verification_token
 from src.services.kafka_producer import get_kafka_producer
 from src.services.tasks import send_email_task
-from src.user.serializers import UserRegisterLoginSerializer, UserProfileSerializer
+from src.user.serializers import UserProfileSerializer, UserRegisterLoginSerializer
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -119,6 +118,7 @@ def user_logout_view(request: Request) -> Response:
 
 class UserProfileView(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.UpdateModelMixin):
     serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user

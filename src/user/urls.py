@@ -1,8 +1,13 @@
 from django.urls import path
 from rest_framework.routers import SimpleRouter
 
-from src.user.views import UserActivateView, UserLoginView, UserRegisterView, user_logout_view, \
-    UserProfileView
+from src.user.views import (
+                  UserActivateView,
+                  UserLoginView,
+                  UserProfileView,
+                  UserRegisterView,
+                  user_logout_view,
+)
 
 app_name = "user"
 route = SimpleRouter()

@@ -1,7 +1,6 @@
 import logging
 
 from confluent_kafka import Producer
-
 from django.conf import settings
 
 logger = logging.getLogger(__name__)

@@ -1,12 +1,11 @@
 from datetime import datetime
 
 import jwt
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.request import Request
 from rest_framework_simplejwt.exceptions import ExpiredTokenError, InvalidToken, TokenError
-
-from django.conf import settings
 
 User = get_user_model()
 
