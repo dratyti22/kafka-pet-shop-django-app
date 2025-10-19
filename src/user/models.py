@@ -20,8 +20,6 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=30, blank=True, null=True)
     first_name = models.CharField(max_length=30, blank=True, null=True)
     phone = PhoneNumberField(blank=True, null=True, region="RU")
-    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0,
-                                  validators=[MinValueValidator(0)])
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

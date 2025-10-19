@@ -10,12 +10,14 @@ from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import viewsets
+from rest_framework import mixins
 
 from src.services.jwt_auth import JWTAuthentication
 from src.services.jwt_utils import generate_auth_tokens, jwt_verification_token
 from src.services.kafka_producer import get_kafka_producer
 from src.services.tasks import send_email_task
-from src.user.serializers import UserRegisterLoginSerializer
+from src.user.serializers import UserRegisterLoginSerializer, UserProfileSerializer
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -113,3 +115,27 @@ def user_logout_view(request: Request) -> Response:
     if request.user.is_authenticated:
         return Response({"data": "Вы успешно вышли"}, status=status.HTTP_200_OK)
     return Response({"data": "Вы не авторизованы"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserProfileView(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.UpdateModelMixin):
+    serializer_class = UserProfileSerializer
+
+    def get_object(self):
+        return self.request.user
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_object()
+        serializer = self.get_serializer(queryset)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs["partial"] = True
+        return self.update(request, *args, **kwargs)

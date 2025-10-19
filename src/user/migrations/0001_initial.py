@@ -32,7 +32,6 @@ class Migration(migrations.Migration):
                 ('last_name', models.CharField(blank=True, max_length=30, null=True)),
                 ('first_name', models.CharField(blank=True, max_length=30, null=True)),
                 ('phone', phonenumber_field.modelfields.PhoneNumberField(blank=True, max_length=128, null=True, region='RU')),
-                ('balance', models.DecimalField(decimal_places=2, default=0, max_digits=10, validators=[django.core.validators.MinValueValidator(0)])),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),
                 ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.permission', verbose_name='user permissions')),
             ],
