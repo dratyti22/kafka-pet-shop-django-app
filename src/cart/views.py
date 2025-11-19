@@ -1,4 +1,8 @@
+from pickle import FALSE
+
 from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -8,9 +12,10 @@ from rest_framework.mixins import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from src.cart.models import CartModel
+from src.cart.models import CartModel, OrderModel
 from src.cart.pagination import CartPagination
 from src.cart.serializers import CartSerializer
+from src.cart.service import OrderService
 
 
 class CartView(viewsets.GenericViewSet, CreateModelMixin, ListModelMixin,
@@ -21,7 +26,8 @@ class CartView(viewsets.GenericViewSet, CreateModelMixin, ListModelMixin,
     lookup_url_kwarg = "id"
 
     def get_queryset(self):
-        from django.db.models import OuterRef, Subquery, Prefetch
+        from django.db.models import OuterRef, Prefetch, Subquery
+
         from src.product.models import PhotoProductModel, ProductModel
 
         main_photo = PhotoProductModel.objects.filter(
@@ -74,3 +80,17 @@ class CartView(viewsets.GenericViewSet, CreateModelMixin, ListModelMixin,
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=["POST"], detail=False, url_path="checkout")
+    def checkout(self, request):
+        cart_items_ids = request.data.get("cart_items", [])
+        if not cart_items_ids:
+            return Response({"error": "No cart items provided"}, status=status.HTTP_400_BAD_REQUEST)
+        order = OrderService.checkout(request.user, cart_items_ids)
+        return Response({"order_id": order.id, "status": order.status}, status=status.HTTP_201_CREATED)
+
+    @action(methods=['get'], detail=True, url_path="status")
+    def status(self, request, pk=None):
+        order = get_object_or_404(OrderModel, id=pk, user=request.user)
+        return Response({"order_id": order.pk,"order_status":order.status,  "order_url_payment": order.url})
+

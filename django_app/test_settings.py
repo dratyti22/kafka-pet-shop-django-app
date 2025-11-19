@@ -1,5 +1,4 @@
 # django_app/test_settings.py
-import os
 from pathlib import Path
 
 # Базовые пути

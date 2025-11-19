@@ -195,3 +195,6 @@ REST_FRAMEWORK = {
 # Kafka
 KAFKA_URL = env("KAFKA_URL")
 
+# FastAPI Payment Service
+FASTAPI_PAYMENT_URL = env("FASTAPI_PAYMENT_URL", default="http://localhost:8001")
+

@@ -1,5 +1,7 @@
 import pytest
 from django.urls import reverse
+
+
 @pytest.fixture(scope="function")
 def get_bearer_token(api_client,user_create):
     response = api_client.post(

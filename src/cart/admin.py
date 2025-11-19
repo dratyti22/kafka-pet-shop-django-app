@@ -1,9 +1,7 @@
 from django.contrib import admin
-
 from unfold.admin import ModelAdmin
 
 from src.cart.models import CartModel
-
 
 # Register your models here.
 
