@@ -6,4 +6,5 @@ class OrderStatusEnum(Enum):
     SHIPPED = 'shipped'
     DELIVERED = 'delivered'
     CANCELLED = 'cancelled'
+    PAID = "paid"
 
